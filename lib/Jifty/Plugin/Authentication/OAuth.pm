@@ -23,7 +23,7 @@ Add the following to your F<etc/config.yml> under the C<framework> section:
 
 =cut
 
-our %CONFIG = ( );
+__PACKAGE__->mk_accessors(qw/consumer_key consumer_secret/);
 
 =head2 init
 
@@ -31,7 +31,16 @@ our %CONFIG = ( );
 
 sub init {
     my $self = shift;
-    %CONFIG  = @_;
+    my %args = @_;
+
+    for my $arg (keys %args) {
+        if ($self->can($arg)) {
+            $self->$arg($args{$arg});
+        }
+        else {
+            warn "Unknown argument: $arg";
+        }
+    }
 }
 
 =head1 AUTHOR
